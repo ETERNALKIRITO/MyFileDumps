@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charles-OS Plasma Demo</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0d0d0d;
+            /* Using the orange from your WebGL text texture */
+            color: rgb(255, 150, 50); 
+            font-family: monospace;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        #plasma-container {
+            margin: 0;
+            line-height: 1; /* Tight line spacing to make it look like a grid */
+            white-space: pre;
+            font-size: 16px;
+            font-weight: bold;
+            user-select: none;
+            /* Adds a slight glow to mimic the CRT blur you had */
+            text-shadow: 0 0 5px rgba(255, 150, 50, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <pre id="plasma-container"></pre>
+
+    <script>
+        const plasmaContainer = document.getElementById("plasma-container");
+        const letters =[" ", "_", "a", "b", "c", "ö", "õ", "ö", "#", "$", "%", "1", "2", "3", "A", "B", "C"];
+        
+        let cols = 0;
+        let rows = 0;
+
+        // Calculate how many rows and columns fit on the screen
+        function resizeGrid() {
+            // Create a hidden span to measure exact character dimensions
+            const testChar = document.createElement("span");
+            testChar.style.fontFamily = "monospace";
+            testChar.style.fontSize = "16px";
+            testChar.style.lineHeight = "1";
+            testChar.textContent = "A";
+            document.body.appendChild(testChar);
+
+            const charWidth = testChar.getBoundingClientRect().width;
+            const charHeight = testChar.getBoundingClientRect().height;
+            document.body.removeChild(testChar);
+
+            // Calculate grid size based on screen dimensions
+            cols = Math.floor(window.innerWidth / charWidth);
+            rows = Math.floor(window.innerHeight / charHeight);
+        }
+
+        // Original plasma math from TerminalFunction.js
+        function GetIntensityPlasma(Row, Col, Time) {
+            let Intensity = 0.0;
+
+            Intensity += 0.7 * Math.sin(0.5 * Row + Time / 5);
+            Intensity += 3 * Math.sin(1.6 * Col + Time / 5);
+            Intensity += 1 * Math.sin(10 * (Col * Math.sin(Time / 2) + Row * Math.cos(Time / 5)) + Time / 2);
+
+            const CyclicX = Row + 0.5 * Math.sin(Time / 2);
+            const CyclicY = Col + 0.5 * Math.cos(Time / 4);
+
+            Intensity += 0.4 * Math.sin(Math.sqrt(100 * CyclicX ** 2 + 100 * CyclicY ** 2 + 1) + Time);
+            Intensity += 0.9 * Math.sin(Math.sqrt(75 * CyclicX ** 2 + 25 * CyclicY ** 2 + 1) + Time);
+            Intensity += -1.4 * Math.sin(Math.sqrt(256 * CyclicX ** 2 + 25 * CyclicY ** 2 + 1) + Time);
+            Intensity += 0.3 * Math.sin(0.5 * Col + Row + Math.sin(Time));
+
+            return 17 * (0.5 + 0.499 * Math.sin(Intensity)) * (0.7 + Math.sin(Time) * 0.3);
+        }
+
+        // Main rendering loop
+        function render(timestamp) {
+            const Time = timestamp * 0.001; // Convert to seconds
+            let textOutput = "";
+
+            for (let Row = 0; Row < rows; Row++) {
+                for (let Col = 0; Col < cols; Col++) {
+                    // Normalize the coordinates (0.0 to 1.0) so the waves span 
+                    // beautifully regardless of the monitor's resolution.
+                    const normRow = Row / rows;
+                    const normCol = Col / cols;
+
+                    const Intensity = GetIntensityPlasma(normRow, normCol, Time);
+                    
+                    // Clamp to the array bounds safely
+                    const charIndex = Math.max(Math.min(Math.floor(Intensity) - 1, letters.length - 1), 0);
+                    
+                    textOutput += letters[charIndex];
+                }
+                textOutput += "\n";
+            }
+
+            plasmaContainer.textContent = textOutput;
+            requestAnimationFrame(render);
+        }
+
+        // Initialize and listen for window resizes
+        window.addEventListener("resize", resizeGrid);
+        resizeGrid();
+
+        // Start animation
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

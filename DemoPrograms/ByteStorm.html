@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lightning Storm</title>
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+        #u {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            color: #fff; font-family: sans-serif; pointer-events: none; 
+            text-shadow: 0 0 10px #000; transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div id="u">CLICK TO START STORM</div>
+    <canvas id="a"></canvas>
+
+<script>
+'use strict';
+
+const canvas = document.getElementById('a');
+const c = canvas.getContext('2d');
+const zzfxR = 44100;
+
+let brightness, i, frame, rand, lightning, mouseX, zzfxX, zzfx;
+
+// Audio Initialization
+zzfxX = new (window.AudioContext || window.webkitAudioContext)();
+
+zzfx = e => {
+    if (zzfxX.state === 'suspended') return;
+
+    let PI2 = Math.PI * 2,
+        b = [], i = 0, count = 0, s = 0, length, buffer, source,
+        volume = e ? .1 + rand(.2) : .01, // Reduced ambient rain volume
+        attack = 3,
+        decay = 0,
+        sustain = 0,
+        release = 3,
+        bitCrush = .05 + rand(.05),
+        delay = .2 + rand(.2),
+        sustainVolume = 1;
+
+    if (e == 1) {
+        attack = .1,
+        decay = .1,
+        sustain = rand(),
+        release = 1 + rand(2),
+        sustainVolume = .5,
+        bitCrush = 1 + rand(2);
+    }
+
+    attack *= zzfxR;
+    decay *= zzfxR;
+    sustain *= zzfxR;
+    release *= zzfxR;
+    delay *= zzfxR;
+
+    for (length = attack + decay + sustain + release + delay | 0;
+        i < length; b[i++] = s) {
+        if (!(++count % (bitCrush * 100 | 0))) {
+            s = Math.random();
+            s = s * volume * (
+                i < attack ? i / attack :
+                i < attack + decay ? 1 - ((i - attack) / decay) * (1 - sustainVolume) :
+                i < attack + decay + sustain ? sustainVolume :
+                i < length - delay ? (length - i - delay) / release * sustainVolume :
+                0);
+
+            s = delay ? s / 2 + (delay > i ? 0 :
+                (i < length - delay ? 1 : (length - i) / delay) *
+                b[i - delay | 0] / 2) : s;
+        }
+    }
+
+    buffer = zzfxX.createBuffer(1, length, zzfxR);
+    buffer.getChannelData(0).set(b);
+    source = zzfxX.createBufferSource();
+    source.buffer = buffer;
+    source.connect(zzfxX.destination);
+    source.start();
+    return source;
+}
+
+// Global random helper
+rand = (r = 1) => Math.random() * r;
+
+// Recursive lightning drawing
+lightning = (X, Y, V, Z) => {
+    c.fillRect(X, Y, Z, Z);
+    if (rand(99) > 98 && Z > 9) lightning(X, Y, V, rand(Z * .8) + 2);
+    if (Y < canvas.height) lightning(X + V * Z / 9, Y + Z / 4, rand(99) > 95 ? rand(8) - 4 : V, Z);
+}
+
+// User Interaction
+onclick = e => {
+    if (zzfxX.state === 'suspended') zzfxX.resume();
+    document.getElementById('u').style.opacity = 0;
+    mouseX = e.clientX;
+};
+
+brightness = frame = mouseX = 0;
+
+setInterval(() => {
+    // Canvas sizing
+    if (canvas.width != innerWidth || canvas.height != innerHeight) {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+    }
+
+    // Background clearing with fade
+    c.globalCompositeOperation = 'source-over';
+    c.fillStyle = `hsl(240,30%,${brightness -= 3}%,.1)`;
+    c.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Rain ambient sound
+    ++frame % 60 || zzfx();
+
+    // Draw rain particles
+    c.save();
+    c.rotate(-.1);
+    c.fillStyle = '#fff5';
+    for (i = 1000; i--; ) { // slightly fewer particles for performance
+        let x = Math.sin(i * i) * canvas.width + canvas.width / 2;
+        let y = (2000 + i) / 2 * (frame / 60 + 9) % (canvas.height * 2);
+        c.fillRect(x, y, Math.sin(i), i % 9 - 40);
+    }
+    c.restore();
+
+    // Lightning trigger
+    c.globalCompositeOperation = 'screen';
+    c.fillStyle = '#8bf5';
+    if (mouseX || (rand() < .003 && brightness < 0)) {
+        brightness = 80 + rand(20);
+        lightning(mouseX || rand(canvas.width), 0, 0, rand(19) + 9);
+        zzfx(1);
+        mouseX = 0;
+    }
+}, 16);
+</script>
+</body>
+</html>

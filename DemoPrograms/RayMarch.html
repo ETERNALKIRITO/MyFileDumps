@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RayMarch</title>
+    <style>
+        body { margin: 0; background: #000000; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: #fff; font-family: monospace; }
+        canvas { width: 500px; height: 500px; border: 2px solid #555; background: #000; image-rendering: pixelated; }
+        .ui { margin-top: 10px; color: #888; }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div class="ui">WASD to Move | Mouse to Look</div>
+
+<script>
+  let M = [], I, J, rx, ry, rz, cx, cy, cz, t, px, py, pz, dx, dy, dz, a, bx, by, bz, D, K, N, pp, E, T, V, W;
+  
+  // Generate Map
+  for (I = 255; I--;) {
+    for (J = 255; J--;) {
+      M.push([I, 0, J]);
+      if (Math.random() > .7) M.push([I, 1, J]);
+    }
+  }
+
+  const H = e => 20 * ++e | 0;
+  let Y = 3, X = 99, Z = 99, RES = 80;
+  let SA = 0, SB = 0, L = 0, A = 0, x = c.getContext`2d`;
+  let CA = 1, CB = 1;
+  const S = Math.sin, C = Math.cos;
+
+  const F = e => 2 * Math.asin(1 - e / 250);
+
+  onmousemove = e => {
+    let rect = c.getBoundingClientRect();
+    A = -2.5 * F(e.clientX - rect.left);
+    B = F(e.clientY - rect.top);
+    CA = C(A); SA = S(A); CB = C(B); SB = S(B);
+  };
+
+  onkeydown = e => L = { w: 1, s: 3, a: 4, d: 2 }[e.key] || 0;
+
+  c.width = c.height = RES;
+  let P = x.createImageData(RES, RES);
+  let Q = P.data;
+  for (N = RES ** 2; N--;) Q[N * 4 + 3] = 255;
+
+  const R = (I, J, e) => {
+    if (I < .5 && J < .5 && e < .5 && I > -.5 && J > -.5 && e > -.5) {
+      K = H(D);
+      D = 9;
+    }
+  };
+
+  const G = () => new Date().getTime();
+
+  (function U() {
+    E = G();
+    
+    // FOV Filter
+    V = M.filter(O => {
+      rx = O[0] - X; ry = O[1] - Y; rz = O[2] - Z;
+      if (rx ** 2 + ry ** 2 + rz ** 2 > 60) return 0;
+      cx = SA * CB; cy = SB; cz = CA * CB;
+      t = (rx * cx + ry * cy + rz * cz);
+      if (t < 1) return 0;
+      px = rx - t * cx; py = ry - t * cy; pz = rz - t * cz;
+      return (px ** 2 + py ** 2 + pz ** 2) < 4 * t * t;
+    });
+
+    for (N = RES ** 2; N--;) {
+      px = 2 * (N % RES) / RES - 1;
+      py = 2 * (N / RES | 0) / RES - 1;
+      pp = CB + py * SB;
+      dx = px * CA + SA * pp;
+      dz = CA * pp - px * SA;
+      dy = SB - py * CB;
+
+      W = V.filter(O => {
+        rx = O[0] - X; ry = O[1] - Y; rz = O[2] - Z;
+        a = rx * dx + ry * dy + rz * dz;
+        bx = rx - a * dx; by = ry - a * dy; bz = rz - a * dz;
+        return bx ** 2 + by ** 2 + bz ** 2 < 2 * a * a;
+      });
+
+      K = 255;
+      for (D = 1; D < 9; D += .2) {
+        for (let i = 0; i < W.length; i++) {
+          let O = W[i];
+          R(O[0] - X - dx * D, O[1] - Y - dy * D, O[2] - Z - dz * D);
+        }
+      }
+      Q[N * 4] = Q[N * 4 + 1] = Q[N * 4 + 2] = K;
+    }
+
+    x.putImageData(P, 0, 0);
+
+    if (L) {
+      T = (G() - E) / 255;
+      Z += T * C(A + Math.PI * (L - 1) / 2);
+      X += T * S(A + Math.PI * (L - 1) / 2);
+    }
+
+    setTimeout(U, 0);
+    L = 0;
+  })();
+</script>
+</body>
+</html>
