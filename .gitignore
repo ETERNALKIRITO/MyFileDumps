@@ -1,0 +1,89 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+jspm_packages/
+web_modules/
+
+# =========================
+# Build outputs
+# =========================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.vuepress/dist
+**/.vitepress/dist
+
+# Webpack
+.webpack/
+
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Coverage & testing
+# =========================
+coverage/
+*.lcov
+.nyc_output/
+
+# =========================
+# Caches & temp files
+# =========================
+.cache/
+.parcel-cache/
+.temp/
+.eslintcache
+.stylelintcache
+.grunt/
+.fusebox/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Package managers
+# =========================
+.npm
+.yarn-integrity
+
+# Yarn v3+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# =========================
+# Misc
+# =========================
+.node_repl_history
+.vscode
+.vscode-test
+.tern-port
+.lock-wscript
+
+# =========================
+# Optional (uncomment if needed)
+# =========================
+ firebase_security-rules.txt
