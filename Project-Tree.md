@@ -1,6 +1,42 @@
 
 ```
 MyFileDumps
+├─ 3D-Models
+│  ├─ FBX
+│  ├─ GLB
+│  │  ├─ Cyber-Penger.glb
+│  │  ├─ Default-Penger.glb
+│  │  ├─ Real-Penger.glb
+│  │  └─ Suitger-Penger.glb
+│  ├─ GLTF
+│  ├─ OBJ
+│  │  ├─ JilMan.obj
+│  │  └─ White-Stickman
+│  │     ├─ model_0.obj
+│  │     ├─ model_1.obj
+│  │     ├─ model_10.obj
+│  │     ├─ model_11.obj
+│  │     ├─ model_12.obj
+│  │     ├─ model_13.obj
+│  │     ├─ model_14.obj
+│  │     ├─ model_15.obj
+│  │     ├─ model_16.obj
+│  │     ├─ model_17.obj
+│  │     ├─ model_18.obj
+│  │     ├─ model_19.obj
+│  │     ├─ model_2.obj
+│  │     ├─ model_20.obj
+│  │     ├─ model_21.obj
+│  │     ├─ model_22.obj
+│  │     ├─ model_23.obj
+│  │     ├─ model_3.obj
+│  │     ├─ model_4.obj
+│  │     ├─ model_5.obj
+│  │     ├─ model_6.obj
+│  │     ├─ model_7.obj
+│  │     ├─ model_8.obj
+│  │     └─ model_9.obj
+│  └─ STL
 ├─ AmigaFiles
 │  ├─ 8SVX
 │  │  └─ Flashback_stereo.8svx
@@ -123,6 +159,23 @@ MyFileDumps
 │     ├─ V29PM.LBM
 │     ├─ V30.LBM
 │     └─ V30RAIN.LBM
+├─ Arts
+│  ├─ TXT
+│  │  └─ BBS.txt
+│  └─ XB
+│     ├─ cat-6.xb
+│     ├─ grouped-values.xb
+│     ├─ life-sized-food.xb
+│     ├─ sketch-148.xb
+│     ├─ sketch-151.xb
+│     ├─ sketch-152.xb
+│     ├─ sketch-153.xb
+│     ├─ sketch-154.xb
+│     ├─ sketch-155.xb
+│     ├─ sketch-71.xb
+│     ├─ sketch-93.xb
+│     ├─ sketch-96.xb
+│     └─ sketch-98.xb
 ├─ AxinAmpSkins
 │  ├─ ACBC.wsz
 │  ├─ Alpha-Silverine-Bluerine.wsz
@@ -194,19 +247,20 @@ MyFileDumps
 │  ├─ Yufo-Flavum.wsz
 │  ├─ Yufo-Viridis.wsz
 │  └─ Zelda.wsz
-└─ Flash Files
-   └─ Games
-      ├─ age_of_war.swf
-      ├─ age_of_war_2.swf
-      ├─ fish_tales.swf
-      ├─ interactive_Buddy_1.02.swf
-      ├─ Interactive_Buddy_2_prototype.swf
-      ├─ islandminigolf.swf
-      ├─ Portal_wcs2.swf
-      ├─ samorost-1.swf
-      ├─ Scary Maze Game 2024.swf
-      ├─ stress_relief_paintball.swf
-      ├─ Windows RG Build 207.swf
-      └─ youare.swf
+├─ Flash Files
+│  └─ Games
+│     ├─ age_of_war.swf
+│     ├─ age_of_war_2.swf
+│     ├─ fish_tales.swf
+│     ├─ interactive_Buddy_1.02.swf
+│     ├─ Interactive_Buddy_2_prototype.swf
+│     ├─ islandminigolf.swf
+│     ├─ Portal_wcs2.swf
+│     ├─ samorost-1.swf
+│     ├─ Scary Maze Game 2024.swf
+│     ├─ stress_relief_paintball.swf
+│     ├─ Windows RG Build 207.swf
+│     └─ youare.swf
+└─ Project-Tree.md
 
 ```
